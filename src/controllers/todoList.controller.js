@@ -1,4 +1,3 @@
-const { json } = require('sequelize')
 const addTodoList = require('../model/todoList.model')
 
 
