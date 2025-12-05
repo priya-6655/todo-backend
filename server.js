@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 
 
 const todoRoutes = require('./src/routes/todoList.route')
+const regRoutes = require('./src/routes/register.route')
 
 
 app.use(cors())
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }))
 
 
 app.use('/todo', todoRoutes)
+app.use('/register', regRoutes)
 
 app.get('/', (req, res) => {
     res.send('Welcom to todo list page')
