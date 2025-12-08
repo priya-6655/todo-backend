@@ -11,7 +11,7 @@ const regRoutes = require('./src/routes/register.route')
 
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://todo-backend-gamma-roan.vercel.ap"],
+    origin: ["http://localhost:5173", "https://todo-frontend-six-eta.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }))
