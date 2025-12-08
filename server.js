@@ -41,13 +41,13 @@ const server = app.listen(port, () => {
 })
 
 // Close DB connections properly on shutdown
-process.on('SIGTERM', async () => {
-    await sequelize.close()
-    server.close()
-})
-process.on('SIGINT', async () => {
-    await sequelize.close()
-    server.close()
-})
+// process.on('SIGTERM', async () => {
+//     await sequelize.close()
+//     server.close()
+// })
+// process.on('SIGINT', async () => {
+//     await sequelize.close()
+//     server.close()
+// })
 
 module.exports = app
