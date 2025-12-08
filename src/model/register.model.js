@@ -8,31 +8,31 @@ const Registration = sequelize.define('registration', {
         primaryKey: true
     },
     fname: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25),
         allowNull: false
     },
     lname: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25),
         allowNull: false
     },
     gender: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25),
         allowNull: false
     },
     phone: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25),
         allowNull: false
     },
     regUsername: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25),
         allowNull: false
     },
     regEmail: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25),
         allowNull: false
     },
     regPass: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25),
         allowNull: false
     }
 }, {
