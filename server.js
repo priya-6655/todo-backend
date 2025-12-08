@@ -23,18 +23,18 @@ app.get('/', (req, res) => {
 })
 
 // Test DB connection and sync
-sequelize.authenticate()
-    .then(() => {
-        console.log('Database connected successfully')
-        return sequelize.sync()
-    })
-    .then(() => {
-        console.log('DB Synced')
-    })
-    .catch((err) => {
-        console.log('DB connection error:', err.message)
-        console.log('Full error:', err)
-    })
+// sequelize.authenticate()
+//     .then(() => {
+//         console.log('Database connected successfully')
+//         return sequelize.sync()
+//     })
+//     .then(() => {
+//         console.log('DB Synced')
+//     })
+//     .catch((err) => {
+//         console.log('DB connection error:', err.message)
+//         console.log('Full error:', err)
+//     })
 
 const server = app.listen(port, () => {
     console.log(`Server running on port ${port}`)
