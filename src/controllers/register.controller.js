@@ -95,5 +95,25 @@ const getUser = async (req, res) => {
     }
 }
 
+const editProfile = async (req, res) => {
+    try {
+        const { id } = req.params
 
-module.exports = { userReg, userLogin, getUser }
+        const updated = await Registration.update(req.body, { where: { id } });
+
+        if (updated[0] === 0) {
+            return res.status(404).json({ message: "User not found or no changes made" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+}
+
+
+module.exports = { userReg, userLogin, getUser, editProfile }

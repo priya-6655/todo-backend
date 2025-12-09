@@ -25,7 +25,8 @@ const Registration = sequelize.define('registration', {
     },
     regUsername: {
         type: DataTypes.STRING(25),
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     regEmail: {
         type: DataTypes.STRING(25),
@@ -34,6 +35,10 @@ const Registration = sequelize.define('registration', {
     regPass: {
         type: DataTypes.STRING(25),
         allowNull: false
+    },
+    image: {
+        type: DataTypes.TEXT('long'),
+        allowNull: true
     }
 }, {
     tableName: 'registration',
