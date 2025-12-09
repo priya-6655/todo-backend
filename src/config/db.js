@@ -25,14 +25,13 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     dialect: 'mysql',
     logging: false,
-    port: DB_PORT,
-    dialectOptions: {
-        ssl: {
-            require: mode === 'LIVE',
-            rejectUnauthorized: false
-        }
+    port: DB_PORT || 3306,
+    pool: {
+        max: 1,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
     }
-
 })
 
 module.exports = sequelize
