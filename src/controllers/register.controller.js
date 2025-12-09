@@ -1,4 +1,5 @@
 const Registration = require('../model/register.model')
+const bcrypt = require('bcrypt')
 
 
 const userReg = async (req, res) => {
@@ -10,6 +11,9 @@ const userReg = async (req, res) => {
                 message: 'All fields are required'
             })
         }
+
+        const salt = await bcrypt.genSalt(10)
+        const hashedPass = await bcrypt.hash(regPass, salt)
 
         const existEmail = await Registration.findOne({ where: { regEmail } })
 
@@ -34,7 +38,7 @@ const userReg = async (req, res) => {
             phone,
             regUsername,
             regEmail,
-            regPass
+            regPass: hashedPass
         })
         res.status(201).json({
             success: true,
@@ -51,20 +55,22 @@ const userReg = async (req, res) => {
 
 const userLogin = async (req, res) => {
     try {
-        const { email, pass } = req.body
+        const { userName, pass } = req.body
 
-        if (!email || !pass) {
+        if (!userName || !pass) {
             return res.status(400).json({ message: "All fields are required" })
         }
 
-        const user = await Registration.findOne({ where: { regEmail: email } })
+        const user = await Registration.findOne({ where: { regUsername: userName } })
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        if (user.regPass !== pass) {
-            return res.status(401).json({ message: "Incorrect password" });
+        const isMatch = await bcrypt.compare(pass, user.regPass)
+
+        if (!isMatch) {
+            return res.status(401).json({ message: "Incorrect password" })
         }
 
         res.status(200).json({

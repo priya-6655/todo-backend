@@ -33,7 +33,7 @@ const Registration = sequelize.define('registration', {
         allowNull: false
     },
     regPass: {
-        type: DataTypes.STRING(25),
+        type: DataTypes.STRING(100),
         allowNull: false
     },
     image: {
