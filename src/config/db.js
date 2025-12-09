@@ -23,19 +23,10 @@ if (mode === 'LIVE') {
 
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
-    dialect: 'mysql2',
+    dialect: 'mysql',
     logging: console.log,
     port: DB_PORT || 3306,
 
-    pool: {
-        max: 1,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    },
-    dialectOptions: {
-        connectTimeout: 30000
-    }
 })
 
 module.exports = sequelize

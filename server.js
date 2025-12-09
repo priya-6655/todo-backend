@@ -22,32 +22,16 @@ app.get('/', (req, res) => {
     res.send('Welcom to todo list page')
 })
 
-// Test DB connection and sync
-// sequelize.authenticate()
-//     .then(() => {
-//         console.log('Database connected successfully')
-//         return sequelize.sync()
-//     })
-//     .then(() => {
-//         console.log('DB Synced')
-//     })
-//     .catch((err) => {
-//         console.log('DB connection error:', err.message)
-//         console.log('Full error:', err)
-//     })
+sequelize.sync().then(() => {
+    console.log('DB Synced')
+}).catch((err) => {
+    console.error('DB Connection Error:', err)
+})
 
-const server = app.listen(port, () => {
+
+app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
 
-// Close DB connections properly on shutdown
-// process.on('SIGTERM', async () => {
-//     await sequelize.close()
-//     server.close()
-// })
-// process.on('SIGINT', async () => {
-//     await sequelize.close()
-//     server.close()
-// })
 
 module.exports = app
