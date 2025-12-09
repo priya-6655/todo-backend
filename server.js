@@ -9,8 +9,13 @@ const port = process.env.PORT || 3000;
 const todoRoutes = require('./src/routes/todoList.route')
 const regRoutes = require('./src/routes/register.route')
 
+const corsOptions = {
+    origin: 'https://todo-frontend-six-eta.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+};
 
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(express.json({ limit: '3mb' }))
 app.use(express.urlencoded({ extended: true }))
 
