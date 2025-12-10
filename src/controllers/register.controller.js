@@ -114,22 +114,31 @@ const editProfile = async (req, res) => {
         let imageurl = user.image
         if (req.file) {
             imageurl = req.file.path
+            console.log('Image uploaded to Cloudinary:', imageurl)
         }
 
         const updatedData = {
-            ...req.body,
+            fname: req.body.fname || user.fname,
+            lname: req.body.lname || user.lname,
+            gender: req.body.gender || user.gender,
+            phone: req.body.phone || user.phone,
+            regUsername: req.body.regUsername || user.regUsername,
+            regEmail: req.body.regEmail || user.regEmail,
             image: imageurl
         }
 
         await user.update(updatedData)
 
+        const updatedUser = await Registration.findByPk(id)
+
         res.status(200).json({
             success: true,
             message: "Profile updated successfully",
-            data: updatedData
+            data: updatedUser
         });
 
     } catch (error) {
+        console.error('Edit profile error:', error)
         res.status(500).json({ message: "Server error", error: error.message });
     }
 }
