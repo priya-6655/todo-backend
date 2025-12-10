@@ -14,12 +14,12 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }))
-app.use('/register', regRoutes)
 
 
 app.use(express.json({ limit: '3mb' }))
 app.use(express.urlencoded({ extended: true }))
 
+app.use('/register', regRoutes)
 
 app.use('/todo', todoRoutes)
 
