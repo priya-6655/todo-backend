@@ -14,12 +14,14 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }))
+app.use('/register', regRoutes)
+
+
 app.use(express.json({ limit: '3mb' }))
 app.use(express.urlencoded({ extended: true }))
 
 
 app.use('/todo', todoRoutes)
-app.use('/register', regRoutes)
 
 app.get('/', (req, res) => {
     res.send('Welcom to todo list page')
