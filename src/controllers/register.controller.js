@@ -105,15 +105,28 @@ const editProfile = async (req, res) => {
     try {
         const { id } = req.params
 
-        const updated = await Registration.update(req.body, { where: { id } });
+        const user = await Registration.findByPk(id);
 
-        if (updated[0] === 0) {
-            return res.status(404).json({ message: "User not found or no changes made" });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
+
+        let imageurl = user.image
+        if (req.file) {
+            imageurl = req.file.path
+        }
+
+        const updatedData = {
+            ...req.body,
+            image: imageurl
+        }
+
+        await user.update(updatedData)
 
         res.status(200).json({
             success: true,
-            message: "Profile updated successfully"
+            message: "Profile updated successfully",
+            data: updatedData
         });
 
     } catch (error) {
