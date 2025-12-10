@@ -117,7 +117,7 @@ const editProfile = async (req, res) => {
             console.log('Image uploaded to Cloudinary:', imageurl)
         }
 
-        const updatedData = {
+        const updatedUserData = {
             fname: req.body.fname || user.fname,
             lname: req.body.lname || user.lname,
             gender: req.body.gender || user.gender,
@@ -127,7 +127,7 @@ const editProfile = async (req, res) => {
             image: imageurl
         }
 
-        await user.update(updatedData)
+        await user.update(updatedUserData)
 
         const updatedUser = await Registration.findByPk(id)
 
