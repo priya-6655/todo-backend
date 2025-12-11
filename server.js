@@ -27,6 +27,16 @@ app.get('/', (req, res) => {
     res.send('Welcome to todo list page')
 })
 
+// DB status check endpoint
+app.get('/db-status', async (req, res) => {
+    try {
+        await sequelize.authenticate()
+        res.json({ status: 'connected', message: 'Database connected successfully' })
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message })
+    }
+})
+
 // Error handling middleware for file uploads
 app.use((err, req, res, next) => {
     if (err.name === 'MulterError') {

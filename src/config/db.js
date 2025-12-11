@@ -21,16 +21,22 @@ if (mode === 'LIVE') {
     console.log('Using LOCAL Database');
 }
 
+// Log connection details (without password)
+console.log('DB Config:', { host: DB_HOST, database: DB_NAME, port: DB_PORT, user: DB_USER })
+
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     dialect: 'mysql',
-    logging: false,
+    logging: console.log,
     port: DB_PORT || 3306,
     pool: {
-        max: 1,
+        max: 2,
         min: 0,
-        acquire: 30000,
+        acquire: 60000,
         idle: 10000
+    },
+    dialectOptions: {
+        connectTimeout: 60000
     }
 })
 
