@@ -9,7 +9,7 @@ const userReg = async (req, res) => {
 
         if (!fname || !lname || !gender || !phone || !regUsername || !regEmail || !regPass) {
             return res.status(400).json({
-                message: 'All fields are required'
+                message: 'All fields are required!'
             })
         }
 
@@ -20,7 +20,7 @@ const userReg = async (req, res) => {
 
         if (existEmail) {
             return res.status(400).json({
-                message: "Email already registered"
+                message: "Email already registered!"
             })
         }
 
@@ -28,7 +28,7 @@ const userReg = async (req, res) => {
 
         if (existPhone) {
             return res.status(400).json({
-                message: "Mobile already registered"
+                message: "Mobile already registered!"
             })
         }
 
