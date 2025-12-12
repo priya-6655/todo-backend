@@ -5,6 +5,8 @@ const mode = process.env.DB_MODE || 'LOCAL'
 
 let DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT;
 
+console.log('DB_MODE from env:', process.env.DB_MODE)
+
 if (mode === 'LIVE') {
     DB_NAME = process.env.LIVE_DB_NAME;
     DB_USER = process.env.LIVE_DB_USER;
@@ -21,13 +23,16 @@ if (mode === 'LIVE') {
     console.log('Using LOCAL Database');
 }
 
-// Log connection details (without password)
-console.log('DB Config:', { host: DB_HOST, database: DB_NAME, port: DB_PORT, user: DB_USER })
+
+if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST) {
+    throw new Error('Missing database environment variables!');
+}
+
 
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     dialect: 'mysql',
-    logging: console.log,
+    logging: false,
     port: DB_PORT || 3306
 })
 
