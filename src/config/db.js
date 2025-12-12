@@ -28,13 +28,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     dialect: 'mysql',
     logging: console.log,
-    port: DB_PORT || 3306,
-    pool: {
-        max: 2,
-        min: 0,
-        acquire: 60000,
-        idle: 10000
-    }
+    port: DB_PORT || 3306
 })
 
 module.exports = sequelize
