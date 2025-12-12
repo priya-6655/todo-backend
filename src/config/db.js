@@ -34,14 +34,6 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
         min: 0,
         acquire: 60000,
         idle: 10000
-    },
-    dialectOptions: {
-        connectTimeout: 60000,
-        ssl: false
-        // mode === 'LIVE' ? {
-        //     require: true,
-        //     rejectUnauthorized: false
-        // } : false
     }
 })
 
