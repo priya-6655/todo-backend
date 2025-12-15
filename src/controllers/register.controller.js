@@ -32,6 +32,14 @@ const userReg = async (req, res) => {
             })
         }
 
+        const existuserName = await Registration.findOne({ where: { regUsername } })
+
+        if (existuserName) {
+            res.status(400).json({
+                message: "User name already registered!"
+            })
+        }
+
         const newUser = await Registration.create({
             fname,
             lname,
