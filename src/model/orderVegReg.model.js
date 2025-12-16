@@ -21,13 +21,22 @@ const OrderVegRegister = sequelize.define('vegRegistration', {
         allowNull: false,
         unique: true
     },
+    age: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     password: {
         type: DataTypes.STRING(200),
         allowNull: false,
+    },
+    loginStatus: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
     tableName: 'vegRegistration',
-    timestamps: false
+    timestamps: false,
+    freezeTableName: true
 })
 
 module.exports = OrderVegRegister
