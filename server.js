@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 const todoRoutes = require('./src/routes/todoList.route')
 const regRoutes = require('./src/routes/register.route')
 const vegOrderRoutes = require('./src/routes/orderVegReg.route')
+const contactRouter = require('./src/routes/contact.route')
 
 
 app.use(cors({
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use('/register', regRoutes)
 app.use('/todo', todoRoutes)
 app.use('/orderVeg', vegOrderRoutes)
+app.use('/ContactUs', contactRouter)
 
 app.get('/', (req, res) => {
     res.send('Welcome to todo list page')
