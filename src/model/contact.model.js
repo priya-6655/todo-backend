@@ -19,11 +19,11 @@ const ContactUs = sequelize.define('contactus', {
         onUpdate: 'CASCADE'
     },
     name: {
-        type: DataTypes.STRING(25),
+        type: DataTypes.STRING(100),
         allowNull: false
     },
     email: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(150),
         allowNull: false
     },
     message: {
