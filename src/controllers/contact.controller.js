@@ -37,10 +37,22 @@ const contact = async (req, res) => {
 
         // Send emails BEFORE response (so it completes on Render)
         let emailSent = false
-        try {
-            if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
-                console.error('Brevo SMTP credentials not configured!')
-            } else {
+        let emailError = null
+
+        // Log env vars (for debugging - remove later)
+        console.log('BREVO_SMTP_HOST:', process.env.BREVO_SMTP_HOST)
+        console.log('BREVO_SMTP_USER:', process.env.BREVO_SMTP_USER ? 'SET' : 'NOT SET')
+        console.log('BREVO_SMTP_PASS:', process.env.BREVO_SMTP_PASS ? 'SET' : 'NOT SET')
+        console.log('MAIL_FROM:', process.env.MAIL_FROM)
+
+        if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
+            emailError = 'Brevo SMTP credentials not configured!'
+            console.error(emailError)
+        } else if (!process.env.MAIL_FROM) {
+            emailError = 'MAIL_FROM not configured!'
+            console.error(emailError)
+        } else {
+            try {
                 const transporter = createTransporter()
 
                 // Mail to user
@@ -63,14 +75,17 @@ const contact = async (req, res) => {
                 console.log('Admin mail sent')
 
                 emailSent = true
+            } catch (err) {
+                emailError = err.message
+                console.error('Email sending error:', err.message)
             }
-        } catch (emailError) {
-            console.error('Email error:', emailError.message)
         }
 
         res.status(201).json({
             success: true,
-            message: emailSent ? "Message sent successfully" : "Message saved (email delivery pending)",
+            message: emailSent ? "Message sent successfully" : "Message saved",
+            emailStatus: emailSent ? "sent" : "failed",
+            emailError: emailError,
             data: newMessage
         })
     } catch (error) {
