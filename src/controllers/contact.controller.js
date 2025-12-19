@@ -1,6 +1,22 @@
 const ContactUs = require('../model/contact.model')
 const nodemailer = require('nodemailer')
 
+// Create transporter function
+const createTransporter = () => {
+    return nodemailer.createTransport({
+        host: process.env.BREVO_SMTP_HOST || 'smtp-relay.brevo.com',
+        port: parseInt(process.env.BREVO_SMTP_PORT) || 587,
+        secure: false,
+        auth: {
+            user: process.env.BREVO_SMTP_USER,
+            pass: process.env.BREVO_SMTP_PASS
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000
+    })
+}
+
 const contact = async (req, res) => {
     try {
         const { userId, name, email, message } = req.body
@@ -11,6 +27,7 @@ const contact = async (req, res) => {
             })
         }
 
+        // Save to database
         const newMessage = await ContactUs.create({
             userId,
             name,
@@ -18,57 +35,42 @@ const contact = async (req, res) => {
             message
         })
 
-        // Send emails in background
-        setImmediate(async () => {
-            try {
-                // Check if Brevo credentials exist
-                if (!process.env.BREVO_SMTP_HOST || !process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
-                    console.error('Brevo SMTP credentials not configured!')
-                    return
-                }
-
-                const transporter = nodemailer.createTransport({
-                    host: process.env.BREVO_SMTP_HOST,
-                    port: parseInt(process.env.BREVO_SMTP_PORT) || 587,
-                    secure: false,
-                    auth: {
-                        user: process.env.BREVO_SMTP_USER,
-                        pass: process.env.BREVO_SMTP_PASS
-                    }
-                })
-
-                // Verify connection
-                await transporter.verify()
-                console.log('SMTP connection verified')
+        // Send emails BEFORE response (so it completes on Render)
+        let emailSent = false
+        try {
+            if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
+                console.error('Brevo SMTP credentials not configured!')
+            } else {
+                const transporter = createTransporter()
 
                 // Mail to user
-                const userMail = await transporter.sendMail({
+                await transporter.sendMail({
                     from: `"Multi Web Services" <${process.env.MAIL_FROM}>`,
                     to: email,
                     subject: 'Welcome to Multi Web Services',
                     text: `Hi ${name},\n\nThanks for contacting us. Your query has been successfully sent to the admin.\n\nWith Best Regards,\nMulti Web Services`
                 })
-                console.log('User mail sent:', userMail.messageId)
+                console.log('User mail sent to:', email)
 
                 // Mail to admin
-                const adminMail = await transporter.sendMail({
+                await transporter.sendMail({
                     from: `"Contact Form" <${process.env.MAIL_FROM}>`,
                     to: process.env.ADMIN_EMAIL || process.env.MAIL_FROM,
                     replyTo: email,
                     subject: `New contact message from ${name}`,
                     text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
                 })
-                console.log('Admin mail sent:', adminMail.messageId)
+                console.log('Admin mail sent')
 
-            } catch (emailError) {
-                console.error('Email sending failed:', emailError.message)
-                console.error('Full error:', emailError)
+                emailSent = true
             }
-        })
+        } catch (emailError) {
+            console.error('Email error:', emailError.message)
+        }
 
         res.status(201).json({
             success: true,
-            message: "Message sent successfully",
+            message: emailSent ? "Message sent successfully" : "Message saved (email delivery pending)",
             data: newMessage
         })
     } catch (error) {
