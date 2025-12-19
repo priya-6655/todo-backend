@@ -35,7 +35,7 @@ const contact = async (req, res) => {
                 from: `"Multi Web Services" <${process.env.MAIL_FROM}>`,
                 to: email,
                 subject: 'Welcome to Multi web services',
-                text: `Hi ${name},\n\n Thanks for contacting us. your query has been successfully sent to the admin\n\nBest Regards\nMulti web services`
+                text: `Hi ${name},\n\n Thanks for contacting us. your query has been successfully sent to the admin\n\nWith Best Regards\nMulti web services`
             })
 
             // mail to admin
