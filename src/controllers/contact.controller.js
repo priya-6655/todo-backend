@@ -57,7 +57,7 @@ const contact = async (req, res) => {
                 // Mail to admin
                 await transporter.sendMail({
                     from: `"Contact Form" <${process.env.MAIL_FROM}>`,
-                    to: process.env.ADMIN_EMAIL || process.env.MAIL_FROM,
+                    to: process.env.MAIL_FROM,
                     replyTo: email,
                     subject: `New contact message from ${name}`,
                     text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
