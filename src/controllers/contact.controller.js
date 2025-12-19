@@ -21,16 +21,18 @@ const contact = async (req, res) => {
 
         setImmediate(async () => {
             const transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: process.env.BREVO_SMTP_HOST,
+                port: process.env.BREVO_SMTP_PORT,
+                secure: false,
                 auth: {
-                    user: process.env.MAIL_USER,
-                    pass: process.env.MAIL_PASS
+                    user: process.env.BREVO_SMTP_USER,
+                    pass: process.env.BREVO_SMTP_PASS
                 }
             })
 
             // mail to user
             await transporter.sendMail({
-                from: `"Multi Web Services" <${process.env.MAIL_USER}>`,
+                from: `"Multi Web Services" <${process.env.MAIL_FROM}>`,
                 to: email,
                 subject: 'Welcome to Multi web services',
                 text: `Hi ${name},\n\n Thanks for contacting us. your query has been successfully sent to the admin\n\nBest Regards\nMulti web services`
@@ -38,8 +40,8 @@ const contact = async (req, res) => {
 
             // mail to admin
             await transporter.sendMail({
-                from: `"Contact Form" <${process.env.MAIL_USER}>`,
-                to: process.env.MAIL_USER,
+                from: `"Contact Form" <${process.env.MAIL_FROM}>`,
+                to: process.env.MAIL_FROM,
                 replyTo: email,
                 subject: `New contact message from ${name}`,
                 text: `Name:${name}\nEmail:${email}\n\nMessage:\n${message}`
