@@ -1,22 +1,6 @@
 const ContactUs = require('../model/contact.model')
 const nodemailer = require('nodemailer')
 
-// Create transporter function
-const createTransporter = () => {
-    return nodemailer.createTransport({
-        host: process.env.BREVO_SMTP_HOST || 'smtp-relay.brevo.com',
-        port: parseInt(process.env.BREVO_SMTP_PORT) || 587,
-        secure: false,
-        auth: {
-            user: process.env.BREVO_SMTP_USER,
-            pass: process.env.BREVO_SMTP_PASS
-        },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 10000
-    })
-}
-
 const contact = async (req, res) => {
     try {
         const { userId, name, email, message } = req.body
@@ -27,7 +11,6 @@ const contact = async (req, res) => {
             })
         }
 
-        // Save to database
         const newMessage = await ContactUs.create({
             userId,
             name,
@@ -35,25 +18,32 @@ const contact = async (req, res) => {
             message
         })
 
-        // Send emails BEFORE response (so it completes on Render)
+        // Send emails using Gmail
         let emailSent = false
         let emailError = null
 
-        // Log env vars (for debugging - remove later)
-        console.log('BREVO_SMTP_HOST:', process.env.BREVO_SMTP_HOST)
-        console.log('BREVO_SMTP_USER:', process.env.BREVO_SMTP_USER ? 'SET' : 'NOT SET')
-        console.log('BREVO_SMTP_PASS:', process.env.BREVO_SMTP_PASS ? 'SET' : 'NOT SET')
-        console.log('MAIL_FROM:', process.env.MAIL_FROM)
-
-        if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
-            emailError = 'Brevo SMTP credentials not configured!'
-            console.error(emailError)
-        } else if (!process.env.MAIL_FROM) {
-            emailError = 'MAIL_FROM not configured!'
-            console.error(emailError)
+        if (
+            !process.env.BREVO_SMTP_HOST ||
+            !process.env.BREVO_SMTP_PORT ||
+            !process.env.BREVO_SMTP_USER ||
+            !process.env.BREVO_SMTP_PASS ||
+            !process.env.MAIL_FROM
+        ) {
+            emailError = 'Mail credentials not configured!';
         } else {
             try {
-                const transporter = createTransporter()
+                const transporter = nodemailer.createTransport({
+                    host: process.env.BREVO_SMTP_HOST,
+                    port: process.env.BREVO_SMTP_PORT,
+                    secure: false,
+                    auth: {
+                        user: process.env.BREVO_SMTP_USER,
+                        pass: process.env.BREVO_SMTP_PASS
+                    },
+                    tls: {
+                        rejectUnauthorized: false,
+                    },
+                })
 
                 // Mail to user
                 await transporter.sendMail({
@@ -77,7 +67,7 @@ const contact = async (req, res) => {
                 emailSent = true
             } catch (err) {
                 emailError = err.message
-                console.error('Email sending error:', err.message)
+                console.error('Email error:', err.message)
             }
         }
 
@@ -98,3 +88,5 @@ const contact = async (req, res) => {
 }
 
 module.exports = { contact }
+
+
