@@ -39,10 +39,7 @@ const contact = async (req, res) => {
                     auth: {
                         user: process.env.BREVO_SMTP_USER,
                         pass: process.env.BREVO_SMTP_PASS
-                    },
-                    tls: {
-                        rejectUnauthorized: true,
-                    },
+                    }
                 })
 
                 // Mail to user
