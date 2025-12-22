@@ -64,20 +64,24 @@ const contact = async (req, res) => {
                 })
                 console.log('Admin mail sent')
 
-                emailSent = true
+                emailSent = true;
+
+                res.status(201).json({
+                    success: true,
+                    message: emailSent ? "Message sent successfully" : "Message saved",
+                    emailStatus: emailSent ? "sent" : "failed",
+                    emailError: emailError,
+                    data: newMessage
+                })
             } catch (err) {
                 emailError = err.message
                 console.error('Email error:', err.message)
+                res.status(500).json({
+                    message: err.errors?.[0]?.message || "Server Error",
+                    error: err.message
+                })
             }
         }
-
-        res.status(201).json({
-            success: true,
-            message: emailSent ? "Message sent successfully" : "Message saved",
-            emailStatus: emailSent ? "sent" : "failed",
-            emailError: emailError,
-            data: newMessage
-        })
     } catch (error) {
         console.error('Contact error:', error)
         res.status(500).json({
