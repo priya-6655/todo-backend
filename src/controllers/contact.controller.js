@@ -41,7 +41,7 @@ const contact = async (req, res) => {
                         pass: process.env.BREVO_SMTP_PASS
                     },
                     tls: {
-                        rejectUnauthorized: false,
+                        rejectUnauthorized: true,
                     },
                 })
 
