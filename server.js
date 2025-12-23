@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use('/register', regRoutes)
 app.use('/todo', todoRoutes)
 app.use('/orderVeg', vegOrderRoutes)
-app.use('/ContactUs', contactRouter)
+app.use('/contactus', contactRouter)
 
 app.get('/', (req, res) => {
     res.send('Welcome to todo list page')
