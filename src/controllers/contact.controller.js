@@ -1,9 +1,10 @@
 const ContactUs = require('../model/contact.model')
-const brevo = require('@getbrevo/brevo')
+const sibApiV3Sdk = require('sib-api-v3-sdk')
 
-
-const client = brevo.ApiClient.instance
-client.authentications['api-key'].apikey = process.env.BREVO_API_KEY
+//configure api
+const client = sibApiV3Sdk.ApiClient.instance
+const apikey = client.authentications['api-key']
+apikey.apikey = process.env.BREVO_API_KEY
 
 
 const contact = async (req, res) => {
@@ -24,7 +25,7 @@ const contact = async (req, res) => {
         })
 
 
-        const apiInst = new brevo.TransactionalEmailsApi()
+        const apiInst = new sibApiV3Sdk.TransactionalEmailsApi()
 
 
         //mail to admin
