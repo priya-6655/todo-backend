@@ -2,8 +2,8 @@ const ContactUs = require('../model/contact.model')
 const brevo = require('@getbrevo/brevo')
 
 
-const defaultClient = brevo.ApiClient.instance
-defaultClient.authentications['api-key'].apikey = process.env.BREVO_API_KEY
+const client = brevo.ApiClient.instance
+client.authentications['api-key'].apikey = process.env.BREVO_API_KEY
 
 
 const contact = async (req, res) => {
@@ -28,53 +28,42 @@ const contact = async (req, res) => {
 
 
         //mail to admin
-        await apiInst.sendTransacEmail(
-            new brevo.SendSmtpEmail({
-                subject: 'New Contact Us Query',
-                sender: {
-                    email: process.env.MAIL_FROM,
-                    name: 'todo mail'
-                },
-                to: [{
-                    email: process.env.ADMIN_EMAIL
-                }],
-                replyTo: { email },
-                htmlContent: `
+        await apiInst.sendTransacEmail({
+            subject: 'New Contact Us Query',
+            sender: {
+                email: process.env.MAIL_FROM,
+                name: 'Multi Web Services'
+            },
+            to: [{
+                email: process.env.ADMIN_EMAIL
+            }],
+            replyTo: { email },
+            htmlContent: `
                             <p><b>Name:</b> ${name}</p>
                             <p><b>Email:</b> ${email}</p>
                             <p><b>Message:</b> ${message}</p>
                         `
-            })
-        )
+        })
 
         //mail to user
-        await apiInst.sendTransacEmail(
-            new brevo.SendSmtpEmail({
-                subject: 'Thanks for your query',
-                sender: { email: process.env.MAIL_FROM, name: 'Todo App' },
-                to: [{ email }],
-                htmlContent: `
+        await apiInst.sendTransacEmail({
+            subject: 'Thanks for your query',
+            sender: { email: process.env.MAIL_FROM, name: 'Multi Web Services' },
+            to: [{ email }],
+            htmlContent: `
                             <p>Hi ${name},</p>
                             <p>Thanks for contacting us. We will reach you soon.</p>
                             <p>Regards,<br/>Support Team</p>
                             `
-            })
-        );
-
-
+        })
 
         return res.status(200).json({
             success: true,
             message: 'Message sent successfully',
-            data: newMessage
         });
 
     } catch (error) {
-        console.error('Contact error:', error)
-        res.status(500).json({
-            message: error.errors?.[0]?.message || "Server Error",
-            error: error.message
-        })
+        res.status(500).json({ message: 'Server Error', error: error.message })
     }
 }
 
