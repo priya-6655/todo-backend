@@ -31,6 +31,9 @@ const contact = async (req, res) => {
             }
         })
 
+        const adminEmail = process.env.ADMIN_EMAIL;
+        if (!adminEmail) throw new Error("Admin email not set");
+
 
         //Mail to ADMIN
         await transporter.sendMail({
