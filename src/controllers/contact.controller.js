@@ -1,5 +1,9 @@
 const ContactUs = require('../model/contact.model')
-const nodemailer = require('nodemailer')
+const brevo = require('@getbrevo/brevo')
+
+
+const defaultClient = brevo.ApiClient.instance
+defaultClient.authentications['api-key'].apikey = process.env.BREVO_API_KEY
 
 
 const contact = async (req, res) => {
@@ -20,51 +24,50 @@ const contact = async (req, res) => {
         })
 
 
-
-        const transporter = nodemailer.createTransport({
-            host: process.env.BREVO_SMTP_HOST,
-            port: process.env.BREVO_SMTP_PORT,
-            secure: false,
-            auth: {
-                user: process.env.BREVO_SMTP_USER,
-                pass: process.env.BREVO_SMTP_PASS
-            }
-        })
-
-        const adminEmail = process.env.ADMIN_EMAIL;
-        if (!adminEmail) throw new Error("Admin email not set");
+        const apiInst = new brevo.TransactionalEmailsApi()
 
 
-        //Mail to ADMIN
-        await transporter.sendMail({
-            from: process.env.MAIL_FROM,
-            to: process.env.ADMIN_EMAIL,
-            subject: 'New Contact Us Query',
-            html: `
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Message:</strong> ${message}</p>
-            `
-        })
+        //mail to admin
+        await apiInst.sendTransacEmail(
+            new brevo.SendSmtpEmail({
+                subject: 'New Contact Us Query',
+                sender: {
+                    email: process.env.MAIL_FROM,
+                    name: 'todo mail'
+                },
+                to: [{
+                    email: process.env.ADMIN_EMAIL
+                }],
+                replyTo: { email },
+                htmlContent: `
+                            <p><b>Name:</b> ${name}</p>
+                            <p><b>Email:</b> ${email}</p>
+                            <p><b>Message:</b> ${message}</p>
+                        `
+            })
+        )
 
-        // Mail to USER
-        await transporter.sendMail({
-            from: process.env.MAIL_FROM,
-            to: email,
-            subject: 'Thanks for your query',
-            html: `
-                <p>Hi ${name},</p>
-                <p>Thanks for contacting us. We will reach you soon.</p>
-                <p>Regards,<br/>Support Team</p>
-            `
-        })
+        //mail to user
+        await apiInst.sendTransacEmail(
+            new brevo.SendSmtpEmail({
+                subject: 'Thanks for your query',
+                sender: { email: process.env.MAIL_FROM, name: 'Todo App' },
+                to: [{ email }],
+                htmlContent: `
+                            <p>Hi ${name},</p>
+                            <p>Thanks for contacting us. We will reach you soon.</p>
+                            <p>Regards,<br/>Support Team</p>
+                            `
+            })
+        );
 
-        res.status(200).json({
+
+
+        return res.status(200).json({
             success: true,
             message: 'Message sent successfully',
             data: newMessage
-        })
-        console.log('Admin mail sent')
+        });
 
     } catch (error) {
         console.error('Contact error:', error)
